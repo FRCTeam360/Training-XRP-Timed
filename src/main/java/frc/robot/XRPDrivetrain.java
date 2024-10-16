@@ -6,9 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.xrp.XRPGyro;
 import edu.wpi.first.wpilibj.xrp.XRPMotor;
+import edu.wpi.first.wpilibj.xrp.XRPRangefinder;
+import edu.wpi.first.wpilibj.xrp.XRPReflectanceSensor;
 
 public class XRPDrivetrain {
+  private ShuffleboardTab tab = Shuffleboard.getTab("Drivebase");
+
   private static final double kGearRatio =
       (30.0 / 14.0) * (28.0 / 16.0) * (36.0 / 9.0) * (26.0 / 8.0); // 48.75:1
   private static final double kCountsPerMotorShaftRev = 12.0;
@@ -25,6 +32,10 @@ public class XRPDrivetrain {
   private final Encoder leftEncoder = new Encoder(4, 5);
   private final Encoder rightEncoder = new Encoder(6, 7);
 
+  private final XRPGyro gyro = new XRPGyro();
+  private final XRPRangefinder rangeFinder = new XRPRangefinder();
+  private final XRPReflectanceSensor refSensor = new XRPReflectanceSensor();
+
   // Set up the differential drive controller
   private final DifferentialDrive diffDrive =
       new DifferentialDrive(leftMotor::set, rightMotor::set);
@@ -38,10 +49,26 @@ public class XRPDrivetrain {
 
     // Invert right side since motor is flipped
     rightMotor.setInverted(true);
+    setupTab();
+  }
+
+  private void setupTab() {
+    tab.addDouble("Gyro: Pitch", gyro::getAngleX);
+    tab.addDouble("Gyro: Roll", gyro::getAngleY);
+    tab.addDouble("Gyro: Yaw", gyro::getAngleZ);
+
+    tab.addDouble("Range Finder: Distance Inches", rangeFinder::getDistanceInches);
+    
+    tab.addDouble("Reflectance Sensor: Left", refSensor::getLeftReflectanceValue);
+    tab.addDouble("Reflectance Sensor: Right", refSensor::getRightReflectanceValue);
   }
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
+  }
+
+  public void tankDrive(double leftDutyCycle, double rightDutyCycle){
+
   }
 
   public void resetEncoders() {
