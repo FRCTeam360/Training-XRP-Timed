@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -85,7 +86,15 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    drivetrain.arcadeDrive(-controller.getLeftY(), -controller.getLeftX());
+    XboxController cont = controller.getHID();
+    if(cont.getAButton()) {
+      drivetrain.pointAtAngle(0.0);
+    } else if(cont.getBButton()){
+      drivetrain.pointAtAngle(180.0);
+    } else {
+      drivetrain.arcadeDrive(0.0, 0.0);
+    }
+
   }
 
   /** This function is called once when the robot is disabled. */

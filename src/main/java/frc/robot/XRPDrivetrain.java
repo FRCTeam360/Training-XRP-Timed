@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -36,6 +37,14 @@ public class XRPDrivetrain {
   private final XRPRangefinder rangeFinder = new XRPRangefinder();
   private final XRPReflectanceSensor refSensor = new XRPReflectanceSensor();
 
+  private final double kP = 0.0;
+  private final double kI = 0.0;
+  private final double kD = 0.0;
+
+  private final PIDController pidController = new PIDController(kP, kI, kD);
+
+  private double angleSetPoint = 0.0;
+
   // Set up the differential drive controller
   private final DifferentialDrive diffDrive =
       new DifferentialDrive(leftMotor::set, rightMotor::set);
@@ -61,6 +70,8 @@ public class XRPDrivetrain {
     
     tab.addDouble("Reflectance Sensor: Left", refSensor::getLeftReflectanceValue);
     tab.addDouble("Reflectance Sensor: Right", refSensor::getRightReflectanceValue);
+
+    tab.addDouble("Angle Setpoint", () -> this.angleSetPoint);
   }
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
@@ -69,6 +80,12 @@ public class XRPDrivetrain {
 
   public void tankDrive(double leftDutyCycle, double rightDutyCycle){
 
+  }
+
+  public void pointAtAngle(double angleSetpoint) {
+    double currAngle = gyro.getAngle();
+    double output = pidController.calculate(currAngle, angleSetpoint);
+    diffDrive.arcadeDrive(0.0, output);
   }
 
   public void resetEncoders() {
