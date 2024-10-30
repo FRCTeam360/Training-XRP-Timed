@@ -54,6 +54,7 @@ public class XRPDrivetrain {
     // Use inches as unit for encoder distances
     leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
     rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
+    pidController.enableContinuousInput(0.0, 360.0);
     resetEncoders();
 
     // Invert right side since motor is flipped
