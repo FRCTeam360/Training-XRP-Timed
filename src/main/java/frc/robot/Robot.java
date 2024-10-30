@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
     } else if(cont.getBButton()){
       drivetrain.pointAtAngle(180.0);
     } else {
-      drivetrain.arcadeDrive(0.0, 0.0);
+      drivetrain.arcadeDrive(-controller.getRightY(), controller.getRightX());
     }
 
   }
